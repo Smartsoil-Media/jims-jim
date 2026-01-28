@@ -12,6 +12,13 @@
 
 * {
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -20,6 +27,9 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 
 /* Hide scrollbar but keep functionality */
@@ -27,9 +37,33 @@ body {
   display: none;
 }
 
-html {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Better input styling for mobile */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input, textarea, select, button {
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Safe area utilities */
+.safe-area-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Touch manipulation for better tap response */
+.touch-manipulation {
+  touch-action: manipulation;
 }
 
 /* Animations */
@@ -46,4 +80,10 @@ html {
 
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
+}
+
+/* Active state for touch feedback */
+button:active:not(:disabled),
+[role="button"]:active {
+  transform: scale(0.98);
 }

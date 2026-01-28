@@ -456,7 +456,7 @@ export function Workout() {
       </div>
 
       {/* Bottom action area */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-midnight-950 via-midnight-950 to-transparent pt-12">
+      <div className="fixed bottom-0 left-0 right-0 px-4 pt-12 pb-4 bg-gradient-to-t from-midnight-950 via-midnight-950 to-transparent safe-area-bottom">
         {!isActive ? (
           <Button
             onClick={handleStartSession}

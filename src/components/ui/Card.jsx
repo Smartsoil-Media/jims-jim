@@ -8,7 +8,7 @@ export function Card({ children, onClick, className = '', active = false, comple
         border-2 transition-all duration-200
         ${active ? 'border-accent shadow-lg shadow-accent/20' : 'border-midnight-700'}
         ${completed ? 'border-accent/50 bg-midnight-800/80' : ''}
-        ${onClick ? 'cursor-pointer active:scale-[0.98]' : ''}
+        ${onClick ? 'cursor-pointer active:scale-[0.98] touch-manipulation' : ''}
         ${className}
       `}
     >

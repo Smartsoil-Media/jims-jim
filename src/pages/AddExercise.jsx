@@ -184,20 +184,20 @@ export function AddExercise() {
         {/* Default Sets & Reps */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-gray-400 block mb-2">Default Sets</label>
-            <div className="flex items-center gap-3">
+            <label className="text-sm text-gray-400 block mb-3">Default Sets</label>
+            <div className="flex items-center justify-between">
               <button
                 type="button"
                 onClick={() => setDefaultSets(Math.max(1, defaultSets - 1))}
-                className="w-10 h-10 rounded-full bg-midnight-800 text-white text-xl border border-midnight-700"
+                className="w-14 h-14 rounded-xl bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
               >
-                -
+                −
               </button>
-              <span className="text-2xl font-bold text-accent w-8 text-center">{defaultSets}</span>
+              <span className="text-3xl font-bold text-accent">{defaultSets}</span>
               <button
                 type="button"
                 onClick={() => setDefaultSets(Math.min(10, defaultSets + 1))}
-                className="w-10 h-10 rounded-full bg-midnight-800 text-white text-xl border border-midnight-700"
+                className="w-14 h-14 rounded-xl bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
               >
                 +
               </button>
@@ -205,22 +205,22 @@ export function AddExercise() {
           </div>
 
           <div>
-            <label className="text-sm text-gray-400 block mb-2">
+            <label className="text-sm text-gray-400 block mb-3">
               Default {unit === 'seconds' ? 'Seconds' : 'Reps'}
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between">
               <button
                 type="button"
                 onClick={() => setDefaultReps(Math.max(1, defaultReps - (unit === 'seconds' ? 5 : 1)))}
-                className="w-10 h-10 rounded-full bg-midnight-800 text-white text-xl border border-midnight-700"
+                className="w-14 h-14 rounded-xl bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
               >
-                -
+                −
               </button>
-              <span className="text-2xl font-bold text-accent w-8 text-center">{defaultReps}</span>
+              <span className="text-3xl font-bold text-accent">{defaultReps}</span>
               <button
                 type="button"
                 onClick={() => setDefaultReps(defaultReps + (unit === 'seconds' ? 5 : 1))}
-                className="w-10 h-10 rounded-full bg-midnight-800 text-white text-xl border border-midnight-700"
+                className="w-14 h-14 rounded-xl bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
               >
                 +
               </button>

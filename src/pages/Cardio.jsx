@@ -129,22 +129,23 @@ export function Cardio() {
       {/* Duration Input */}
       <div className="mb-8">
         <label className="block text-sm text-gray-400 mb-3">Duration (minutes)</label>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-5">
           <button
             onClick={() => adjustDuration(-5)}
-            className="w-14 h-14 rounded-full bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700"
+            className="w-18 h-18 w-[72px] h-[72px] rounded-2xl bg-midnight-800 text-white text-3xl font-bold border-2 border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
           >
-            -
+            −
           </button>
           <input
             type="number"
+            inputMode="numeric"
             value={duration}
             onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 0))}
-            className="w-32 h-20 rounded-2xl bg-midnight-800 border-2 border-midnight-700 text-center text-4xl font-bold text-accent focus:border-accent focus:outline-none"
+            className="w-28 h-20 rounded-2xl bg-midnight-800 border-2 border-midnight-700 text-center text-4xl font-bold text-accent focus:border-accent focus:outline-none"
           />
           <button
             onClick={() => adjustDuration(5)}
-            className="w-14 h-14 rounded-full bg-midnight-800 text-white text-2xl font-bold border border-midnight-700 active:bg-midnight-700"
+            className="w-18 h-18 w-[72px] h-[72px] rounded-2xl bg-midnight-800 text-white text-3xl font-bold border-2 border-midnight-700 active:bg-midnight-700 active:scale-95 transition-transform touch-manipulation"
           >
             +
           </button>
@@ -157,6 +158,7 @@ export function Cardio() {
         <label className="block text-sm text-gray-400 mb-3">Distance (km) - optional</label>
         <input
           type="number"
+          inputMode="decimal"
           step="0.1"
           value={distance}
           onChange={(e) => setDistance(e.target.value)}
@@ -199,7 +201,7 @@ export function Cardio() {
       )}
 
       {/* Save Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-midnight-950 via-midnight-950 to-transparent pt-12">
+      <div className="fixed bottom-0 left-0 right-0 px-4 pt-12 pb-4 bg-gradient-to-t from-midnight-950 via-midnight-950 to-transparent safe-area-bottom">
         <Button
           onClick={handleSave}
           size="xl"
