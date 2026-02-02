@@ -445,6 +445,7 @@ export function Workout() {
               isSelectionMode={!isActive}
               isSelected={selectedExercises.has(exercise.id)}
               daysSinceLastDone={daysSince}
+              loggedSets={loggedExercises[exercise.id]?.sets || []}
               onClick={
                 isActive
                   ? () => setSelectedExercise(exercise)
@@ -480,7 +481,6 @@ export function Workout() {
         exercise={selectedExercise}
         lastWeight={selectedExercise ? getLastWeight(selectedExercise.id) : null}
         onLog={handleLogSet}
-        loggedSets={selectedExercise ? (loggedExercises[selectedExercise.id]?.sets || []) : []}
       />
     </div>
   )

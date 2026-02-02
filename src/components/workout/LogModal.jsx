@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 
-export function LogModal({ isOpen, onClose, exercise, lastWeight, onLog, loggedSets = [] }) {
+export function LogModal({ isOpen, onClose, exercise, lastWeight, onLog }) {
   const [weight, setWeight] = useState(lastWeight || '')
   const [reps, setReps] = useState(exercise?.defaultReps || 10)
   const [toFailure, setToFailure] = useState(false)
@@ -25,9 +25,8 @@ export function LogModal({ isOpen, onClose, exercise, lastWeight, onLog, loggedS
   const handleSubmit = () => {
     if (weight && reps) {
       onLog(Number(weight), Number(reps), toFailure)
-      // Reset for next set but keep weight
-      setReps(exercise?.defaultReps || 10)
-      setToFailure(false)
+      // Close modal after logging - set will appear on the card
+      onClose()
     }
   }
 
@@ -112,29 +111,8 @@ export function LogModal({ isOpen, onClose, exercise, lastWeight, onLog, loggedS
 
         {/* Submit Button */}
         <Button onClick={handleSubmit} size="xl" className="w-full">
-          Log Set
+          Log Set ✓
         </Button>
-
-        {/* Logged Sets Display */}
-        {loggedSets.length > 0 && (
-          <div className="pt-3 border-t border-midnight-700">
-            <p className="text-sm text-gray-400 mb-2">Sets logged:</p>
-            <div className="flex flex-wrap gap-2">
-              {loggedSets.map((set, index) => (
-                <div key={index} className="flex items-center gap-1 text-sm bg-midnight-800 px-3 py-1.5 rounded-full">
-                  <span className="text-accent font-medium">S{index + 1}</span>
-                  <span className="text-white">
-                    {isTimeBased
-                      ? `${set.reps}${isMinutes ? 'm' : 's'} @ ${set.weight}`
-                      : `${set.weight}kg × ${set.reps}`
-                    }
-                  </span>
-                  {set.toFailure && <span className="text-orange-500">🔥</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </Modal>
   )

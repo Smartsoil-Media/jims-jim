@@ -8,9 +8,10 @@ export function ExerciseCard({
   isActive,
   isSelectionMode,
   isSelected,
-  daysSinceLastDone
+  daysSinceLastDone,
+  loggedSets = []
 }) {
-  const hasProgress = stats?.sets > 0
+  const hasProgress = loggedSets.length > 0
   const isTimeBased = exercise?.unit === 'seconds' || exercise?.unit === 'minutes'
   const isMinutes = exercise?.unit === 'minutes'
   const unitLabel = isTimeBased ? (isMinutes ? 'min' : 's') : 'reps'
@@ -62,37 +63,66 @@ export function ExerciseCard({
   }
 
   // Active workout mode
+  const hasFailure = loggedSets.some(s => s.toFailure)
+  const displayWeight = loggedSets.length > 0
+    ? loggedSets[loggedSets.length - 1].weight
+    : lastWeight
+
   return (
-    <Card
-      onClick={onClick}
-      active={hasProgress}
-      className="min-h-[120px] flex flex-col justify-between"
-    >
-      <div className="flex justify-between items-start">
-        <h3 className="font-medium text-white text-sm leading-tight pr-2">
-          {exercise.name}
-        </h3>
-        {stats?.hasFailure && (
-          <span className="text-orange-500 text-xs">🔥</span>
-        )}
-      </div>
+    <div className="flex flex-col">
+      <Card
+        onClick={onClick}
+        active={hasProgress}
+        className={`min-h-[100px] flex flex-col justify-between ${hasProgress ? 'border-green-500/50' : ''}`}
+      >
+        <div className="flex justify-between items-start">
+          <h3 className="font-medium text-white text-sm leading-tight pr-2">
+            {exercise.name}
+          </h3>
+          {hasProgress && (
+            <span className="text-green-500 text-lg">✓</span>
+          )}
+        </div>
 
-      <div className="mt-2">
-        <p className="text-2xl font-bold text-accent">
-          {stats?.lastWeight || lastWeight || '—'}
-          {(stats?.lastWeight || lastWeight) && <span className="text-lg">{weightUnit}</span>}
-        </p>
-      </div>
-
-      <div className="mt-1">
-        {hasProgress ? (
-          <p className="text-sm text-gray-400">
-            {stats.sets} {stats.sets === 1 ? 'set' : 'sets'} @ {stats.avgReps} {unitLabel}
+        <div className="mt-2">
+          <p className="text-2xl font-bold text-accent">
+            {displayWeight || '—'}
+            {displayWeight && <span className="text-lg">{weightUnit}</span>}
           </p>
-        ) : (
-          <p className="text-sm text-gray-500">Tap to log</p>
-        )}
-      </div>
-    </Card>
+        </div>
+
+        <div className="mt-1">
+          {hasProgress ? (
+            <p className="text-sm text-green-400">
+              {loggedSets.length} {loggedSets.length === 1 ? 'set' : 'sets'} done
+              {hasFailure && ' 🔥'}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500">Tap to log</p>
+          )}
+        </div>
+      </Card>
+
+      {/* Sets displayed below the card */}
+      {hasProgress && (
+        <div className="mt-2 space-y-1 px-1">
+          {loggedSets.map((set, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between text-xs bg-midnight-800/50 rounded-lg px-2 py-1.5"
+            >
+              <span className="text-gray-500">Set {index + 1}</span>
+              <span className="text-white">
+                {isTimeBased
+                  ? `${set.reps}${isMinutes ? 'm' : 's'} @ ${set.weight}${weightUnit}`
+                  : `${set.weight}${weightUnit} × ${set.reps}`
+                }
+                {set.toFailure && <span className="text-orange-500 ml-1">🔥</span>}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

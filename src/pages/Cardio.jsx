@@ -14,9 +14,10 @@ export function Cardio() {
   const [saving, setSaving] = useState(false)
   const [startTime, setStartTime] = useState(null)
 
-  const runTypes = [
+  const cardioTypes = [
     { id: 'treadmill', name: 'Treadmill', icon: '🏃', description: 'Indoor run' },
     { id: 'outdoor', name: 'Outdoor Run', icon: '🌳', description: 'Hit the streets' },
+    { id: 'bike', name: 'Exercise Bike', icon: '🚴', description: 'Cycling session' },
   ]
 
   // Start timer when type is selected
@@ -36,7 +37,7 @@ export function Cardio() {
         duration: duration,
         exercises: [{
           id: selectedType,
-          name: runTypes.find(t => t.id === selectedType)?.name || 'Run',
+          name: cardioTypes.find(t => t.id === selectedType)?.name || 'Cardio',
           sets: [{
             reps: duration,
             weight: distance ? parseFloat(distance) : 0,
@@ -77,13 +78,13 @@ export function Cardio() {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-white">Cardio</h1>
-            <p className="text-gray-400 text-sm">Choose your run type</p>
+            <p className="text-gray-400 text-sm">Choose your cardio</p>
           </div>
         </div>
 
         {/* Run Type Selection */}
         <div className="space-y-4">
-          {runTypes.map(type => (
+          {cardioTypes.map(type => (
             <button
               key={type.id}
               onClick={() => setSelectedType(type.id)}
@@ -106,7 +107,7 @@ export function Cardio() {
   }
 
   // Logging screen
-  const selectedRunType = runTypes.find(t => t.id === selectedType)
+  const selectedCardioType = cardioTypes.find(t => t.id === selectedType)
 
   return (
     <div className="min-h-screen bg-midnight-950 px-4 py-6 pb-32">
@@ -119,10 +120,10 @@ export function Cardio() {
         </button>
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <span>{selectedRunType?.icon}</span>
-            {selectedRunType?.name}
+            <span>{selectedCardioType?.icon}</span>
+            {selectedCardioType?.name}
           </h1>
-          <p className="text-gray-400 text-sm">Log your run</p>
+          <p className="text-gray-400 text-sm">Log your session</p>
         </div>
       </div>
 
@@ -208,7 +209,7 @@ export function Cardio() {
           className="w-full"
           disabled={saving || duration < 1}
         >
-          {saving ? 'Saving...' : 'Save Run'}
+          {saving ? 'Saving...' : 'Save Session'}
         </Button>
       </div>
     </div>
