@@ -72,8 +72,7 @@ export function ExerciseCard({
     <div className="flex flex-col">
       <Card
         onClick={onClick}
-        active={hasProgress}
-        className={`min-h-[100px] flex flex-col justify-between ${hasProgress ? 'border-green-500/50' : ''}`}
+        className={`min-h-[100px] flex flex-col justify-between ${hasProgress ? 'border-green-500' : ''}`}
       >
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-white text-sm leading-tight pr-2">

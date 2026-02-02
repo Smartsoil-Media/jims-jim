@@ -232,6 +232,16 @@ export function Workout() {
     }
   }
 
+  const handleBack = () => {
+    if (isActive) {
+      if (confirm('Are you sure you want to cancel this session? Your progress will be lost.')) {
+        navigate('/')
+      }
+    } else {
+      navigate('/')
+    }
+  }
+
   const formatTime = (minutes) => {
     const hrs = Math.floor(minutes / 60)
     const mins = minutes % 60
@@ -342,7 +352,7 @@ export function Workout() {
     <div className="min-h-screen bg-midnight-950 px-4 py-6 pb-32">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate('/')} className="text-gray-400 p-2 -ml-2">
+        <button onClick={handleBack} className="text-gray-400 p-2 -ml-2">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
