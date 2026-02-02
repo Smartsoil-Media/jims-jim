@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Card } from '../components/ui/Card'
 import { categories } from '../data/defaultExercises'
 import { useAuth } from '../hooks/useAuth.jsx'
-import { getLastWorkoutDate, getMostRecentWorkoutDate, getWorkoutStreak, getWorkoutHistory } from '../firebase/firestore'
+import { getLastWorkoutDate, getMostRecentWorkoutDate, getWorkoutStreak, getWorkoutHistory, getWeeklyCardioDistance, getUserPreferences } from '../firebase/firestore'
 
 // Streak messages - for daily warriors (2+ day streak)
 const streakMessages = [
@@ -54,6 +54,8 @@ export function Home() {
   const [welcomeMessage, setWelcomeMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [recentWorkout, setRecentWorkout] = useState(null)
+  const [weeklyCardioDistance, setWeeklyCardioDistance] = useState(0)
+  const [weeklyCardioGoal, setWeeklyCardioGoal] = useState(0)
 
   // Fetch last workout dates for all categories
   useEffect(() => {
@@ -63,15 +65,21 @@ export function Home() {
       setLoading(true)
       try {
         // Fetch all data in parallel
-        const [dates, currentStreak, lastWorkoutDate, history] = await Promise.all([
+        const [dates, currentStreak, lastWorkoutDate, history, cardioDistance, prefs] = await Promise.all([
           Promise.all(categories.map(async (category) => {
             const date = await getLastWorkoutDate(user.uid, category.id)
             return { id: category.id, date }
           })),
           getWorkoutStreak(user.uid),
           getMostRecentWorkoutDate(user.uid),
-          getWorkoutHistory(user.uid, 1)
+          getWorkoutHistory(user.uid, 1),
+          getWeeklyCardioDistance(user.uid),
+          getUserPreferences(user.uid)
         ])
+
+        // Set cardio data
+        setWeeklyCardioDistance(cardioDistance)
+        setWeeklyCardioGoal(prefs.weeklyCardioGoal || 0)
 
         // Set last workouts
         const workoutDates = {}
@@ -232,6 +240,34 @@ export function Home() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Cardio Tracker */}
+      {weeklyCardioGoal > 0 && (
+        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-br from-midnight-800 to-midnight-900 border border-midnight-700">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🚴</span>
+              <span className="text-sm text-gray-400">Weekly cardio</span>
+            </div>
+            <span className="text-sm font-bold text-accent">
+              {weeklyCardioDistance.toFixed(1)} / {weeklyCardioGoal}km
+            </span>
+          </div>
+          <div className="h-3 bg-midnight-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                weeklyCardioDistance >= weeklyCardioGoal
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500'
+                  : 'bg-gradient-to-r from-blue-500 to-cyan-500'
+              }`}
+              style={{ width: `${Math.min(100, (weeklyCardioDistance / weeklyCardioGoal) * 100)}%` }}
+            />
+          </div>
+          {weeklyCardioDistance >= weeklyCardioGoal && (
+            <p className="text-xs text-green-400 mt-2 text-center">Goal reached! 🎉</p>
+          )}
         </div>
       )}
 

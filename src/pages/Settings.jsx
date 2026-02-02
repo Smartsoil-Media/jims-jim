@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { updateProfile } from 'firebase/auth'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { useAuth } from '../hooks/useAuth.jsx'
-import { resetUserData } from '../firebase/firestore'
+import { resetUserData, getUserPreferences, saveUserPreferences } from '../firebase/firestore'
 
 export function Settings() {
   const navigate = useNavigate()
@@ -13,6 +13,30 @@ export function Settings() {
   const [name, setName] = useState(user?.displayName || '')
   const [saving, setSaving] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [weeklyCardioGoal, setWeeklyCardioGoal] = useState(0)
+  const [savingCardioGoal, setSavingCardioGoal] = useState(false)
+
+  // Load user preferences
+  useEffect(() => {
+    if (user) {
+      getUserPreferences(user.uid).then(prefs => {
+        setWeeklyCardioGoal(prefs.weeklyCardioGoal || 0)
+      })
+    }
+  }, [user])
+
+  const handleSaveCardioGoal = async (newGoal) => {
+    if (!user) return
+    setSavingCardioGoal(true)
+    try {
+      await saveUserPreferences(user.uid, { weeklyCardioGoal: newGoal })
+      setWeeklyCardioGoal(newGoal)
+    } catch (error) {
+      console.error('Failed to save cardio goal:', error)
+    } finally {
+      setSavingCardioGoal(false)
+    }
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -155,6 +179,36 @@ export function Settings() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
+        </Card>
+      </div>
+
+      {/* Goals */}
+      <div className="mb-6">
+        <h2 className="text-sm text-gray-500 uppercase tracking-wider mb-3">Goals</h2>
+        <Card className="space-y-4">
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <span className="text-white">Weekly Cardio Goal</span>
+              <p className="text-xs text-gray-500">Distance to complete each week</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleSaveCardioGoal(Math.max(0, weeklyCardioGoal - 5))}
+                disabled={savingCardioGoal}
+                className="w-8 h-8 rounded-lg bg-midnight-700 text-white text-lg font-bold active:bg-midnight-600"
+              >
+                −
+              </button>
+              <span className="text-accent font-bold w-12 text-center">{weeklyCardioGoal}km</span>
+              <button
+                onClick={() => handleSaveCardioGoal(weeklyCardioGoal + 5)}
+                disabled={savingCardioGoal}
+                className="w-8 h-8 rounded-lg bg-midnight-700 text-white text-lg font-bold active:bg-midnight-600"
+              >
+                +
+              </button>
+            </div>
+          </div>
         </Card>
       </div>
 

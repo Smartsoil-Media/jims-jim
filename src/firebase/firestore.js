@@ -344,7 +344,77 @@ export async function getUserPreferences(userId) {
   if (docSnap.exists()) {
     return docSnap.data()
   }
-  return { hiddenExercises: [] }
+  return { hiddenExercises: [], weeklyCardioGoal: 0 }
+}
+
+// Save user preferences
+export async function saveUserPreferences(userId, preferences) {
+  const docRef = doc(db, 'userPreferences', userId)
+  await setDoc(docRef, preferences, { merge: true })
+}
+
+// Get weekly cardio distance (km done this week)
+export async function getWeeklyCardioDistance(userId) {
+  try {
+    // Get start of current week (Monday)
+    const now = new Date()
+    const dayOfWeek = now.getDay()
+    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - diffToMonday)
+    monday.setHours(0, 0, 0, 0)
+
+    const q = query(
+      collection(db, 'workoutSessions'),
+      where('userId', '==', userId),
+      where('category', '==', 'cardio'),
+      where('createdAt', '>=', monday),
+      orderBy('createdAt', 'desc')
+    )
+
+    const snapshot = await getDocs(q)
+    let totalDistance = 0
+
+    snapshot.forEach(doc => {
+      const data = doc.data()
+      if (data.cardio?.distance) {
+        totalDistance += data.cardio.distance
+      }
+    })
+
+    return totalDistance
+  } catch (error) {
+    console.error('getWeeklyCardioDistance error:', error)
+    // Fallback without index
+    if (error.code === 'failed-precondition') {
+      const q = query(
+        collection(db, 'workoutSessions'),
+        where('userId', '==', userId),
+        where('category', '==', 'cardio')
+      )
+
+      const now = new Date()
+      const dayOfWeek = now.getDay()
+      const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+      const monday = new Date(now)
+      monday.setDate(now.getDate() - diffToMonday)
+      monday.setHours(0, 0, 0, 0)
+
+      const snapshot = await getDocs(q)
+      let totalDistance = 0
+
+      snapshot.forEach(doc => {
+        const data = doc.data()
+        const createdAt = data.createdAt?.toDate()
+        if (createdAt && createdAt >= monday && data.cardio?.distance) {
+          totalDistance += data.cardio.distance
+        }
+      })
+
+      return totalDistance
+    }
+    return 0
+  }
 }
 
 // Delete a workout
